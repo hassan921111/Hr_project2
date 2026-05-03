@@ -136,7 +136,7 @@ function Dashboard() {
     formData.append('jobDescription', jobDescription);
 
     try {
-      const response = await fetch('http://localhost:6001/api/screen-cv', {
+      const response = await fetch('/api/screen-cv', {
         method: 'POST',
         body: formData,
       });
@@ -180,7 +180,7 @@ function Dashboard() {
     setErrorPrompt(null);
 
     try {
-      const response = await fetch('http://localhost:6001/api/schedule-interview', {
+      const response = await fetch('/api/schedule-interview', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
