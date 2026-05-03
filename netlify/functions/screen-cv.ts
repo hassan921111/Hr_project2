@@ -1,8 +1,10 @@
 import { Handler } from '@netlify/functions';
 import { GoogleGenAI } from '@google/genai';
 import Busboy from 'busboy';
+// @ts-ignore
+import pdf from 'pdf-parse';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
 function parseMultipart(event: any): Promise<{
   fields: Record<string, string>;
@@ -52,6 +54,11 @@ export const handler: Handler = async (event) => {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
+  if (!process.env.GEMINI_API_KEY) {
+    console.error('GEMINI_API_KEY is missing in environment variables');
+    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Server configuration error: API key missing' }) };
+  }
+
   try {
     const { fields, files } = await parseMultipart(event);
     const jobDescription = fields.jobDescription;
@@ -64,16 +71,16 @@ export const handler: Handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Job description is required.' }) };
     }
 
-    // Extract text — for PDF try pdf-parse, fallback to raw text
+    console.log(`Processing CV: ${cvFile.mimeType}, size: ${cvFile.content.length}`);
+
     let cvText = '';
     if (cvFile.mimeType === 'application/pdf') {
       try {
-        // pdf-parse uses CommonJS exports, dynamic require works in bundled env
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const pdfParse = require('pdf-parse');
-        const pdfData = await pdfParse(cvFile.content);
+        const pdfData = await pdf(cvFile.content);
         cvText = pdfData.text;
-      } catch {
+        console.log('Successfully parsed PDF text');
+      } catch (err: any) {
+        console.error('PDF parsing failed, falling back to raw text:', err);
         cvText = cvFile.content.toString('utf-8');
       }
     } else {
@@ -100,6 +107,7 @@ Extract the following information and output ONLY valid JSON without markdown wr
 }
     `;
 
+    console.log('Sending request to Gemini...');
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-lite',
       contents: prompt,
@@ -111,7 +119,9 @@ Extract the following information and output ONLY valid JSON without markdown wr
     let result;
     try {
       result = JSON.parse(jsonStr);
-    } catch {
+      console.log('Successfully parsed Gemini JSON response');
+    } catch (parseErr) {
+      console.error('Failed to parse Gemini response:', responseText);
       return {
         statusCode: 500,
         headers,
@@ -129,3 +139,4 @@ Extract the following information and output ONLY valid JSON without markdown wr
     };
   }
 };
+
