@@ -1,9 +1,6 @@
 import { Handler } from '@netlify/functions';
 import { GoogleGenAI } from '@google/genai';
 import Busboy from 'busboy';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -15,7 +12,6 @@ function parseMultipart(event: any): Promise<{
     const contentType =
       event.headers['content-type'] || event.headers['Content-Type'] || '';
     const busboy = Busboy({ headers: { 'content-type': contentType } });
-
     const fields: Record<string, string> = {};
     const files: Record<string, { content: Buffer; mimeType: string }> = {};
 
@@ -51,10 +47,7 @@ export const handler: Handler = async (event) => {
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
   };
 
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers, body: '' };
-  }
-
+  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers, body: '' };
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
@@ -67,22 +60,28 @@ export const handler: Handler = async (event) => {
     if (!cvFile) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'No CV uploaded.' }) };
     }
-
     if (!jobDescription) {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Job description is required.' }) };
     }
 
+    // Extract text — for PDF try pdf-parse, fallback to raw text
     let cvText = '';
     if (cvFile.mimeType === 'application/pdf') {
-      const pdfParse = require('pdf-parse');
-      const pdfData = await pdfParse(cvFile.content);
-      cvText = pdfData.text;
+      try {
+        // pdf-parse uses CommonJS exports, dynamic require works in bundled env
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const pdfParse = require('pdf-parse');
+        const pdfData = await pdfParse(cvFile.content);
+        cvText = pdfData.text;
+      } catch {
+        cvText = cvFile.content.toString('utf-8');
+      }
     } else {
       cvText = cvFile.content.toString('utf-8');
     }
 
     const prompt = `
-You are an expert HR AI assistant. 
+You are an expert HR AI assistant.
 Analyze the following candidate's CV against the provided Job Description.
 
 Job Description:
@@ -113,12 +112,20 @@ Extract the following information and output ONLY valid JSON without markdown wr
     try {
       result = JSON.parse(jsonStr);
     } catch {
-      return { statusCode: 500, headers, body: JSON.stringify({ error: 'Failed to parse AI response' }) };
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Failed to parse AI response' }),
+      };
     }
 
     return { statusCode: 200, headers, body: JSON.stringify(result) };
   } catch (error: any) {
-    console.error('Error in screen-cv:', error);
-    return { statusCode: 500, headers, body: JSON.stringify({ error: error.message || 'Internal server error' }) };
+    console.error('Error in screen-cv function:', error);
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ error: error.message || 'Internal server error while processing CV.' }),
+    };
   }
 };
