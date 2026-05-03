@@ -11,7 +11,7 @@ import { GoogleGenAI } from '@google/genai';
 // Initialize Gemini
 const ai = new GoogleGenAI({ 
   // User provided key fallback if environment variable is not present
-  apiKey: process.env.GEMINI_API_KEY || "AIzaSyDDWWcZ2Rv-2tsmG6D34AetN4VI3MDWRGU" 
+  apiKey: process.env.GEMINI_API_KEY || "AIzaSyBvwlA4wDqTTa75R7rEz380tnvjiqkIEmU" 
 });
 
 const upload = multer({ storage: multer.memoryStorage() });
