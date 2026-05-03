@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
@@ -11,7 +12,7 @@ import { GoogleGenAI } from '@google/genai';
 // Initialize Gemini
 const ai = new GoogleGenAI({ 
   // User provided key fallback if environment variable is not present
-  apiKey: process.env.GEMINI_API_KEY || "AIzaSyBvwlA4wDqTTa75R7rEz380tnvjiqkIEmU" 
+  apiKey: process.env.GEMINI_API_KEY
 });
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -164,7 +165,7 @@ const upload = multer({ storage: multer.memoryStorage() });
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }
