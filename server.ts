@@ -11,7 +11,7 @@ import { GoogleGenAI } from '@google/genai';
 // Initialize Gemini
 const ai = new GoogleGenAI({ 
   // User provided key fallback if environment variable is not present
-  apiKey: process.env.GEMINI_API_KEY || "AIzaSyBShW8gzfl96sqlEQUFZVKxa1w7u3kZcfk" 
+  apiKey: process.env.GEMINI_API_KEY || "AIzaSyDDWWcZ2Rv-2tsmG6D34AetN4VI3MDWRGU" 
 });
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -135,6 +135,12 @@ const upload = multer({ storage: multer.memoryStorage() });
       console.error('Error scheduling interview:', error);
       res.status(500).json({ error: 'Failed to schedule interview.' });
     }
+  });
+
+  // Global Error Handler for API routes
+  app.use('/api', (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error('API Error:', err);
+    res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
   });
 
   // Vite middleware for development
