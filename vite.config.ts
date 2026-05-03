@@ -9,7 +9,7 @@ export default defineConfig(({mode}) => {
     plugins: [react(), tailwindcss()],
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'import.meta.env.VITE_CLERK_PUBLISHABLE_KEY': JSON.stringify(env.VITE_CLERK_PUBLISHABLE_KEY || "pk_test_aGVyb2ljLWxhbWItNzguY2xlcmsuYWNjb3VudHMuZGV2JA"),
+      'import.meta.env.VITE_CLERK_PUBLISHABLE_KEY': JSON.stringify(env.VITE_CLERK_PUBLISHABLE_KEY || "pk_test_bG92aW5nLWFwaGlkLTY1LmNsZXJrLmFjY291bnRzLmRldiQ"),
     },
     resolve: {
       alias: {
@@ -20,12 +20,6 @@ export default defineConfig(({mode}) => {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
-      proxy: {
-        '/api': {
-          target: 'http://127.0.0.1:6001',
-          changeOrigin: true
-        }
-      }
     },
   };
 });
