@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { SignedIn, SignedOut, SignIn, UserButton, SignUp } from '@clerk/clerk-react';
-import { UploadCloud, CheckCircle, FileText, Calendar, Loader2, Sparkles, AlertCircle, Trash2 } from 'lucide-react';
+import { UploadCloud, CheckCircle, FileText, Calendar, Loader2, Sparkles, AlertCircle, Trash2, ChevronRight, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface Candidate {
   id: string;
@@ -15,48 +16,84 @@ export default function App() {
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
 
   return (
-    <div className="min-h-screen bg-[#050505] font-sans text-[#e0e0e0] flex flex-col">
-      <header className="h-20 border-b border-zinc-800 px-8 bg-zinc-900/10 flex items-center justify-between sticky top-0 z-10 w-full">
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl font-serif tracking-tight text-white italic">Astra.HR</h1>
-          <span className="px-2 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-bold tracking-wider rounded uppercase">Agent Active</span>
-        </div>
-        <div>
+    <div className="min-h-screen bg-[#030303] text-zinc-100 font-sans flex flex-col relative overflow-hidden">
+      {/* Dynamic Background */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-600/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute top-[40%] left-[50%] w-[30%] h-[30%] bg-fuchsia-600/10 blur-[150px] rounded-full pointer-events-none -translate-x-1/2" />
+
+      <header className="h-20 border-b border-white/5 bg-black/30 backdrop-blur-xl px-8 flex items-center justify-between sticky top-0 z-50 w-full transition-all duration-300">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-4"
+        >
+          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 shadow-lg shadow-violet-500/20">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
+            Astra.HR
+          </h1>
+          <motion.span 
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="px-2.5 py-1 bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[10px] font-bold tracking-widest rounded-full uppercase ml-2 flex items-center gap-1"
+          >
+            <Zap className="w-3 h-3" /> Live
+          </motion.span>
+        </motion.div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
           <SignedOut>
-            <div className="flex space-x-3">
+            <div className="flex space-x-4 bg-white/5 p-1 rounded-lg border border-white/10">
               <button 
                 onClick={() => setAuthMode('signin')}
-                className={`px-4 py-2 text-xs font-bold rounded transition-colors ${authMode === 'signin' ? 'bg-white text-black hover:bg-zinc-200' : 'border border-zinc-700 text-white hover:bg-zinc-800'}`}
+                className={`px-5 py-2 text-sm font-semibold rounded-md transition-all duration-300 ${authMode === 'signin' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-zinc-400 hover:text-white'}`}
               >
                 Sign In
               </button>
               <button 
                 onClick={() => setAuthMode('signup')}
-                className={`px-4 py-2 text-xs font-bold rounded transition-colors ${authMode === 'signup' ? 'bg-white text-black hover:bg-zinc-200' : 'border border-zinc-700 text-white hover:bg-zinc-800'}`}
+                className={`px-5 py-2 text-sm font-semibold rounded-md transition-all duration-300 ${authMode === 'signup' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-zinc-400 hover:text-white'}`}
               >
                 Sign Up
               </button>
             </div>
           </SignedOut>
           <SignedIn>
-            <UserButton />
+            <div className="ring-2 ring-white/10 rounded-full p-0.5 hover:ring-violet-500/50 transition-all duration-300">
+              <UserButton appearance={{ elements: { avatarBox: "w-10 h-10" } }} />
+            </div>
           </SignedIn>
-        </div>
+        </motion.div>
       </header>
 
-      <main className="flex-1 flex flex-col p-8 w-full max-w-7xl mx-auto">
+      <main className="flex-1 flex flex-col p-6 md:p-12 w-full max-w-[1400px] mx-auto z-10 relative">
         <SignedOut>
-          <div className="flex flex-col items-center justify-center mt-20">
-            <div className="max-w-md w-full bg-zinc-900/40 p-8 rounded-2xl border border-zinc-800 flex flex-col items-center">
-              <h2 className="text-2xl font-serif mb-2 text-center text-white">Welcome Context</h2>
-              <p className="text-zinc-500 mb-8 text-center text-sm leading-relaxed">
-                Authenticate to access the agent workspace.
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center mt-10 lg:mt-20"
+          >
+            <div className="max-w-md w-full bg-black/40 backdrop-blur-2xl p-8 rounded-[2rem] border border-white/10 shadow-2xl flex flex-col items-center relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <div className="w-16 h-16 bg-gradient-to-tr from-violet-600 to-fuchsia-600 rounded-2xl flex items-center justify-center mb-6 shadow-xl shadow-violet-500/20 rotate-3 group-hover:rotate-6 transition-transform">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              
+              <h2 className="text-3xl font-bold mb-3 text-center text-white tracking-tight">Access Hub</h2>
+              <p className="text-zinc-400 mb-8 text-center text-sm leading-relaxed max-w-[80%]">
+                Authenticate to enter the intelligent HR workspace and analyze candidates.
               </p>
-              <div className="bg-white p-4 rounded-xl w-full">
+              <div className="bg-white/5 p-4 rounded-2xl w-full border border-white/10 shadow-inner">
                 {authMode === 'signin' ? <SignIn routing="hash" /> : <SignUp routing="hash" />}
               </div>
             </div>
-          </div>
+          </motion.div>
         </SignedOut>
 
         <SignedIn>
@@ -86,8 +123,8 @@ function Dashboard() {
     if (!file) return;
 
     if (!jobDescription.trim()) {
-      setErrorPrompt('Please enter a Job Description first so we can score the candidates correctly.');
-      e.target.value = ''; // reset file input
+      setErrorPrompt('Please define the Job Description first.');
+      e.target.value = '';
       return;
     }
 
@@ -116,13 +153,13 @@ function Dashboard() {
         ...data
       };
 
-      setCandidates(prev => [...prev, newCandidate].sort((a, b) => b.matchScore - a.matchScore)); // Keep highest scores at top
+      setCandidates(prev => [...prev, newCandidate].sort((a, b) => b.matchScore - a.matchScore));
     } catch (err: any) {
       console.error(err);
-      setErrorPrompt(err.message || 'Error communicating with the screening agent.');
+      setErrorPrompt(err.message || 'Error communicating with the agent.');
     } finally {
       setIsProcessing(false);
-      e.target.value = ''; // reset file input
+      e.target.value = '';
     }
   };
 
@@ -158,10 +195,10 @@ function Dashboard() {
         throw new Error('Failed to schedule the interview.');
       }
 
-      setScheduleSuccess(`Interview scheduled and email sent to ${selectedCandidate.candidateEmail}!`);
-      setTimeout(() => setScheduleModalOpen(false), 3000);
+      setScheduleSuccess(`Invitation sent to ${selectedCandidate.candidateEmail}!`);
+      setTimeout(() => setScheduleModalOpen(false), 2000);
     } catch (err: any) {
-      setErrorPrompt(err.message || 'Error scheduling interview. Check your SMTP settings.');
+      setErrorPrompt(err.message || 'Failed to schedule. Check SMTP config.');
     } finally {
       setIsScheduling(false);
     }
@@ -172,45 +209,67 @@ function Dashboard() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      
-      {/* Left Column - Setup */}
-      <div className="lg:col-span-4 flex flex-col gap-6">
-        <div className="bg-zinc-900/40 border border-zinc-800 p-6 rounded-xl">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-[#e0e0e0] flex items-center gap-2 mb-2">
-            <FileText className="w-4 h-4 text-zinc-400" />
-            Job Description
-          </h2>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-4">
-            Paste the requirements and core skills
-          </p>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="grid grid-cols-1 xl:grid-cols-12 gap-8"
+    >
+      {/* Setup Section */}
+      <div className="xl:col-span-4 flex flex-col gap-6">
+        <motion.div 
+          whileHover={{ y: -2 }}
+          className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] shadow-xl relative overflow-hidden group"
+        >
+          <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/10 blur-[50px] rounded-full" />
+          
+          <div className="flex items-center justify-between mb-4 relative z-10">
+            <h2 className="text-sm font-bold tracking-widest text-white flex items-center gap-3">
+              <span className="p-2 bg-violet-500/20 text-violet-400 rounded-lg">
+                <FileText className="w-4 h-4" />
+              </span>
+              JOB REQUIREMENTS
+            </h2>
+          </div>
+          
           <textarea 
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
-            className="w-full h-48 p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl focus:ring-1 focus:ring-zinc-600 focus:outline-none transition-all text-sm resize-none text-[#e0e0e0] placeholder-zinc-600"
-            placeholder="e.g. We are looking for a Senior Python Developer with experience building AI agents and working with LLMs..."
+            className="w-full h-48 p-4 bg-black/50 border border-white/5 rounded-2xl focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all text-sm resize-none text-zinc-200 placeholder-zinc-600 relative z-10"
+            placeholder="E.g. Seeking a Senior Engineer with deep expertise in LLMs, Agentic Architectures, and Typescript..."
           />
-        </div>
+        </motion.div>
 
-        <div className="bg-zinc-900/40 border border-zinc-800 p-6 rounded-xl">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-[#e0e0e0] flex items-center gap-2 mb-2">
-            <UploadCloud className="w-4 h-4 text-zinc-400" />
-            Candidate CV
-          </h2>
-          <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-4">
-            Upload PDF or TXT for AI parsing
-          </p>
+        <motion.div 
+          whileHover={{ y: -2 }}
+          className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 p-6 rounded-[2rem] shadow-xl relative overflow-hidden"
+        >
+          <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-500/10 blur-[50px] rounded-full" />
+
+          <div className="flex items-center justify-between mb-4 relative z-10">
+            <h2 className="text-sm font-bold tracking-widest text-white flex items-center gap-3">
+              <span className="p-2 bg-blue-500/20 text-blue-400 rounded-lg">
+                <UploadCloud className="w-4 h-4" />
+              </span>
+              ANALYZE CV
+            </h2>
+          </div>
           
-          <label className={`w-full group flex flex-col items-center justify-center h-32 border-2 border-dashed rounded-xl transition-all ${isProcessing ? 'border-zinc-800 bg-zinc-900/20 cursor-not-allowed' : 'border-zinc-700 hover:border-zinc-500 hover:bg-zinc-800/30 cursor-pointer'}`}>
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+          <label className={`w-full relative z-10 flex flex-col items-center justify-center h-40 border-2 border-dashed rounded-2xl transition-all duration-300 ${isProcessing ? 'border-violet-500/50 bg-violet-500/10 cursor-not-allowed' : 'border-white/10 hover:border-violet-500/50 hover:bg-white/5 cursor-pointer'}`}>
+            <div className="flex flex-col items-center justify-center text-center p-6">
               {isProcessing ? (
-                <Loader2 className="w-8 h-8 text-zinc-500 animate-spin mb-2" />
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                >
+                  <Sparkles className="w-10 h-10 text-violet-400 mb-3" />
+                </motion.div>
               ) : (
-                <UploadCloud className="w-8 h-8 text-zinc-600 group-hover:text-zinc-400 transition-colors mb-2" />
+                <UploadCloud className="w-10 h-10 text-zinc-500 mb-3 group-hover:text-violet-400 transition-colors" />
               )}
-              <p className="text-xs font-mono text-zinc-500 uppercase tracking-wider mt-2">
-                {isProcessing ? 'Agent is reviewing...' : 'Click to upload CV'}
+              <p className="text-sm font-semibold text-zinc-300">
+                {isProcessing ? 'Agent processing context...' : 'Drag & drop CV or Click'}
               </p>
+              <p className="text-xs text-zinc-500 mt-2">Supports PDF & TXT</p>
             </div>
             <input 
               type="file" 
@@ -221,154 +280,227 @@ function Dashboard() {
             />
           </label>
 
-          {errorPrompt && (
-            <div className="mt-4 p-3 bg-red-500/10 text-red-400 text-xs font-mono rounded border border-red-500/20 flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <span>{errorPrompt}</span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Right Column - Results */}
-      <div className="lg:col-span-8">
-        <div className="bg-zinc-900/20 border border-zinc-800 rounded-2xl min-h-[500px] flex flex-col">
-          <div className="p-5 border-b border-zinc-800 flex justify-between items-center">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-white">Top Ranked Candidates</h3>
-            <div className="text-[10px] text-zinc-500 font-mono">{candidates.length} Scored</div>
-          </div>
-
-          {candidates.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-zinc-600">
-              <CheckCircle className="w-12 h-12 mb-3 opacity-20" />
-              <p className="text-xs uppercase tracking-widest font-mono">No candidates screened</p>
-            </div>
-          ) : (
-            <div className="flex flex-col">
-              {candidates.map((candidate) => (
-                <div key={candidate.id} className="relative group p-5 border-b border-zinc-800/50 hover:bg-zinc-900/50 transition-all flex flex-col md:flex-row gap-6">
-                  <div className="shrink-0 flex flex-col items-center justify-center w-24">
-                    <div className="text-3xl font-serif text-white">{candidate.matchScore}%</div>
-                    <span className={`text-[10px] mt-1 font-bold tracking-widest uppercase ${
-                        candidate.matchScore >= 80 ? 'text-emerald-400' : 
-                        candidate.matchScore >= 50 ? 'text-yellow-500' : 
-                        'text-red-400'
-                    }`}>Match</span>
-                  </div>
-
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-1">
-                      <div>
-                        <h3 className="font-medium text-white">{candidate.candidateName}</h3>
-                        <a href={`mailto:${candidate.candidateEmail}`} className="text-[10px] text-zinc-500 font-mono hover:text-zinc-300">
-                          {candidate.candidateEmail}
-                        </a>
-                      </div>
-                      <button 
-                        onClick={() => removeCandidate(candidate.id)}
-                        className="text-zinc-600 hover:text-red-400 transition-colors p-1 md:opacity-0 md:group-hover:opacity-100"
-                        title="Remove Candidate"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                    
-                    <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
-                      {candidate.aiSummary}
-                    </p>
-
-                    <div className="flex items-center justify-between mt-auto">
-                      <div className="flex flex-wrap gap-2">
-                        {candidate.skillsDetected.map((skill, i) => (
-                          <span key={i} className="bg-zinc-800/50 text-zinc-300 px-2 py-1 rounded text-[10px] uppercase tracking-wider border border-zinc-700/50">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                      <button
-                        onClick={() => handleOpenScheduleModal(candidate)}
-                        disabled={candidate.candidateEmail === 'Not Provided' || candidate.candidateEmail.includes('Unknown')}
-                        className="text-[10px] uppercase tracking-widest border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 px-3 py-1.5 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        Schedule
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {scheduleModalOpen && selectedCandidate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-md p-6">
-            <h2 className="text-xl font-serif text-white mb-1">Schedule Interview</h2>
-            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-6">Agent dispatch to {selectedCandidate.candidateName}</p>
-
-            {scheduleSuccess && (
-              <div className="mb-4 p-3 bg-emerald-500/10 text-emerald-400 text-sm border border-emerald-500/20 rounded-lg flex items-start gap-2">
-                <CheckCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                <span>{scheduleSuccess}</span>
-              </div>
+          <AnimatePresence>
+            {errorPrompt && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-4 p-4 bg-red-500/10 text-red-400 text-sm rounded-xl border border-red-500/20 flex items-start gap-3 relative z-10"
+              >
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                <span className="font-medium">{errorPrompt}</span>
+              </motion.div>
             )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
 
-            <form onSubmit={handleScheduleSubmit} className="flex flex-col gap-4">
-              <div>
-                <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Target Email</label>
-                <input 
-                  type="email" 
-                  value={selectedCandidate.candidateEmail} 
-                  disabled
-                  className="w-full p-2.5 bg-zinc-800/50 border border-zinc-700 rounded-lg text-sm text-zinc-500"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Date</label>
-                  <input 
-                    type="date" 
-                    required
-                    value={interviewDate}
-                    onChange={(e) => setInterviewDate(e.target.value)}
-                    className="w-full p-2.5 bg-zinc-900/50 border border-zinc-800 rounded-lg text-sm text-[#e0e0e0] focus:ring-1 focus:ring-zinc-600 focus:outline-none transition-all [&::-webkit-calendar-picker-indicator]:invert"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-zinc-400 mb-1">Time</label>
-                  <input 
-                    type="time" 
-                    required
-                    value={interviewTime}
-                    onChange={(e) => setInterviewTime(e.target.value)}
-                    className="w-full p-2.5 bg-zinc-900/50 border border-zinc-800 rounded-lg text-sm text-[#e0e0e0] focus:ring-1 focus:ring-zinc-600 focus:outline-none transition-all [&::-webkit-calendar-picker-indicator]:invert"
-                  />
-                </div>
-              </div>
+      {/* Results Section */}
+      <div className="xl:col-span-8">
+        <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-[2rem] shadow-2xl min-h-[600px] flex flex-col overflow-hidden relative">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-blue-500" />
+          
+          <div className="p-6 md:p-8 border-b border-white/5 flex justify-between items-end">
+            <div>
+              <h3 className="text-xl font-bold text-white mb-1">Ranked Candidates</h3>
+              <p className="text-sm text-zinc-400">AI-driven matching against your requirements</p>
+            </div>
+            <div className="px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-xs font-bold text-zinc-300">
+              {candidates.length} Scored
+            </div>
+          </div>
 
-              <div className="flex items-center gap-3 mt-6 pt-6 border-t border-zinc-800">
-                <button 
-                  type="button"
-                  onClick={() => setScheduleModalOpen(false)}
-                  className="flex-1 py-2.5 rounded border border-zinc-700 text-white font-bold text-xs hover:bg-zinc-800 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit"
-                  disabled={isScheduling || !!scheduleSuccess}
-                  className="flex-1 py-2.5 rounded bg-white text-black font-bold text-xs hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-wait"
-                >
-                  {isScheduling && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {isScheduling ? 'Sending...' : 'Send Invite'}
-                </button>
-              </div>
-            </form>
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 relative">
+            {candidates.length === 0 ? (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="absolute inset-0 flex flex-col items-center justify-center text-zinc-500"
+              >
+                <div className="w-24 h-24 mb-6 rounded-full border-2 border-dashed border-zinc-700 flex items-center justify-center bg-white/5">
+                  <CheckCircle className="w-10 h-10 opacity-50" />
+                </div>
+                <p className="text-lg font-medium text-zinc-400">No candidates analyzed yet</p>
+                <p className="text-sm text-zinc-600 mt-2">Upload a CV to begin the evaluation process.</p>
+              </motion.div>
+            ) : (
+              <AnimatePresence>
+                {candidates.map((candidate, idx) => (
+                  <motion.div 
+                    key={candidate.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="group relative bg-black/40 border border-white/5 hover:border-white/10 p-6 rounded-2xl transition-all hover:bg-white/[0.02] flex flex-col md:flex-row gap-6 md:gap-8 items-start"
+                  >
+                    {/* Score Ring */}
+                    <div className="shrink-0 flex flex-col items-center justify-center">
+                      <div className="relative w-24 h-24 flex items-center justify-center">
+                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                          <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="8" className="text-zinc-800" />
+                          <motion.circle 
+                            initial={{ strokeDasharray: "0 300" }}
+                            animate={{ strokeDasharray: `${(candidate.matchScore / 100) * 283} 300` }}
+                            transition={{ duration: 1.5, ease: "easeOut" }}
+                            cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" 
+                            className={`${
+                                candidate.matchScore >= 80 ? 'text-violet-500' : 
+                                candidate.matchScore >= 50 ? 'text-blue-500' : 
+                                'text-rose-500'
+                            }`}
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-2xl font-bold text-white">{candidate.matchScore}</span>
+                          <span className="text-[10px] uppercase font-bold text-zinc-500">Match</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex-1 w-full">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                            {candidate.candidateName}
+                            {candidate.matchScore >= 90 && <Sparkles className="w-4 h-4 text-amber-400" />}
+                          </h3>
+                          <a href={`mailto:${candidate.candidateEmail}`} className="text-sm text-zinc-400 hover:text-violet-400 transition-colors">
+                            {candidate.candidateEmail}
+                          </a>
+                        </div>
+                        <button 
+                          onClick={() => removeCandidate(candidate.id)}
+                          className="w-8 h-8 flex items-center justify-center rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                      
+                      <p className="text-zinc-300 text-sm leading-relaxed mb-6 bg-white/5 p-4 rounded-xl border border-white/5">
+                        {candidate.aiSummary}
+                      </p>
+
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-auto">
+                        <div className="flex flex-wrap gap-2">
+                          {candidate.skillsDetected.slice(0, 5).map((skill, i) => (
+                            <span key={i} className="bg-white/5 text-zinc-300 px-3 py-1 rounded-full text-xs font-medium border border-white/10">
+                              {skill}
+                            </span>
+                          ))}
+                          {candidate.skillsDetected.length > 5 && (
+                            <span className="text-xs text-zinc-500 py-1 px-2">+{candidate.skillsDetected.length - 5} more</span>
+                          )}
+                        </div>
+                        
+                        <button
+                          onClick={() => handleOpenScheduleModal(candidate)}
+                          disabled={candidate.candidateEmail === 'Not Provided' || candidate.candidateEmail.includes('Unknown')}
+                          className="shrink-0 flex items-center gap-2 bg-white text-black hover:bg-zinc-200 px-5 py-2.5 rounded-xl text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-white/10 group/btn"
+                        >
+                          <Calendar className="w-4 h-4" />
+                          Schedule
+                          <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            )}
           </div>
         </div>
-      )}
+      </div>
 
-    </div>
+      {/* Schedule Modal */}
+      <AnimatePresence>
+        {scheduleModalOpen && selectedCandidate && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-zinc-900 border border-white/10 rounded-[2rem] w-full max-w-lg p-8 shadow-2xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-40 h-40 bg-violet-500/10 blur-[50px] rounded-full pointer-events-none" />
+
+              <h2 className="text-2xl font-bold text-white mb-2">Schedule Interview</h2>
+              <p className="text-sm text-zinc-400 mb-8">Set up a meeting with <span className="text-white font-medium">{selectedCandidate.candidateName}</span></p>
+
+              {scheduleSuccess && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 p-4 bg-emerald-500/10 text-emerald-400 text-sm border border-emerald-500/20 rounded-xl flex items-center gap-3"
+                >
+                  <CheckCircle className="w-5 h-5 shrink-0" />
+                  <span className="font-medium">{scheduleSuccess}</span>
+                </motion.div>
+              )}
+
+              <form onSubmit={handleScheduleSubmit} className="flex flex-col gap-5 relative z-10">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">Recipient</label>
+                  <input 
+                    type="email" 
+                    value={selectedCandidate.candidateEmail} 
+                    disabled
+                    className="w-full p-3.5 bg-black/50 border border-white/5 rounded-xl text-sm text-zinc-400 font-medium cursor-not-allowed"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">Date</label>
+                    <input 
+                      type="date" 
+                      required
+                      value={interviewDate}
+                      onChange={(e) => setInterviewDate(e.target.value)}
+                      className="w-full p-3.5 bg-black/50 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all [&::-webkit-calendar-picker-indicator]:invert"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">Time</label>
+                    <input 
+                      type="time" 
+                      required
+                      value={interviewTime}
+                      onChange={(e) => setInterviewTime(e.target.value)}
+                      className="w-full p-3.5 bg-black/50 border border-white/10 rounded-xl text-sm text-white focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all [&::-webkit-calendar-picker-indicator]:invert"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 mt-8">
+                  <button 
+                    type="button"
+                    onClick={() => setScheduleModalOpen(false)}
+                    className="flex-1 py-3.5 rounded-xl border border-white/10 text-white font-bold text-sm hover:bg-white/5 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    disabled={isScheduling || !!scheduleSuccess}
+                    className="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 text-white font-bold text-sm hover:from-violet-500 hover:to-blue-500 transition-all shadow-lg shadow-violet-500/25 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isScheduling && <Loader2 className="w-5 h-5 animate-spin" />}
+                    {isScheduling ? 'Dispatching...' : 'Send Invitation'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+    </motion.div>
   );
 }

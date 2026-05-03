@@ -11,14 +11,14 @@ import { GoogleGenAI } from '@google/genai';
 // Initialize Gemini
 const ai = new GoogleGenAI({ 
   // User provided key fallback if environment variable is not present
-  apiKey: process.env.GEMINI_API_KEY || "AIzaSyBCG6256SVF4z4XzWcz7g_xzCIeu-itdqg" 
+  apiKey: process.env.GEMINI_API_KEY || "AIzaSyBShW8gzfl96sqlEQUFZVKxa1w7u3kZcfk" 
 });
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-async function startServer() {
-  const app = express();
-  const PORT = 5000;
+  async function startServer() {
+    const app = express();
+    const PORT = 6001;
 
   app.use(express.json());
 
