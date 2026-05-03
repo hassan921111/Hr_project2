@@ -22,6 +22,12 @@ const upload = multer({ storage: multer.memoryStorage() });
 
   app.use(express.json());
 
+  // Log all incoming requests for debugging
+  app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+    next();
+  });
+
   // Set up Nodemailer with the user's provided app password
   const transporter = nodemailer.createTransport({
     service: 'gmail',
